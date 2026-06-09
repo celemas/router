@@ -1,16 +1,16 @@
 # Changelog
 
-## [Unreleased](https://github.com/celemas/router/compare/0.3.0...HEAD)
+## [Unreleased](https://codeberg.org/celemas/router/compare/0.3.0...HEAD)
 
 No notable changes since the last release.
 
-## [0.3.0](https://github.com/celemas/router/releases/tag/0.3.0) (2026-06-09)
+## [0.3.0](https://codeberg.org/celemas/router/src/tag/0.3.0) (2026-06-09)
 
 ### Breaking
 
 - Renamed the Composer package from `duon/router` to `celemas/router` and the public PHP namespace from `Duon\Router` to `Celemas\Router`.
 
-## [0.2.0](https://github.com/celemas/router/releases/tag/0.2.0) (2026-05-02)
+## [0.2.0](https://codeberg.org/celemas/router/src/tag/0.2.0) (2026-05-02)
 
 ### Breaking
 
@@ -46,7 +46,7 @@ No notable changes since the last release.
 - Group middleware, `Before` handlers, `After` handlers, and controller settings are collected while the group callback runs and then applied to all group routes.
 - Invalid route action errors now distinguish missing controllers, missing methods, unsupported bare method strings, and non-callable controller methods.
 
-## [0.1.0](https://github.com/celemas/router/releases/tag/0.1.0) (2026-01-31)
+## [0.1.0](https://codeberg.org/celemas/router/src/tag/0.1.0) (2026-01-31)
 
 Initial release.
 
