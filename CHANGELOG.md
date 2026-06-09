@@ -1,10 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/celemas/router/compare/0.2.0...HEAD)
+## [Unreleased](https://github.com/celemas/router/compare/0.3.0...HEAD)
 
-### Breaking Changes
+No notable changes since the last release.
 
-- Rename package metadata, root namespace, repository URLs, homepage, and contact email to Celemas.
+## [0.3.0](https://github.com/celemas/router/releases/tag/0.3.0) (2026-05-02)
+
+### Breaking
+
+- Renamed the Composer package from `duon/router` to `celemas/router` and the public PHP namespace from `Duon\Router` to `Celemas\Router`.
 
 ## [0.2.0](https://github.com/celemas/router/releases/tag/0.2.0) (2026-05-02)
 
