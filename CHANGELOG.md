@@ -4,7 +4,7 @@
 
 No notable changes since the last release.
 
-## [0.3.0](https://github.com/celemas/router/releases/tag/0.3.0) (2026-05-02)
+## [0.3.0](https://github.com/celemas/router/releases/tag/0.3.0) (2026-06-09)
 
 ### Breaking
 
