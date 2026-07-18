@@ -1,10 +1,10 @@
-# Celemas Router
+# Celema Router
 
 <!-- prettier-ignore-start -->
-[![ci](https://codeberg.org/celemas/router/badges/workflows/ci.yml/badge.svg?style=flat&logo=codeberg&logoColor=white&label=ci)](https://codeberg.org/celemas/router/actions)
-[![code coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fcov.celemas.dev%2Fcelemas%2Frouter%2Fcode%2Fbadge.json)](https://cov.celemas.dev/celemas/router/code)
-[![type coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fcov.celemas.dev%2Fcelemas%2Frouter%2Ftypes%2Fbadge-cover.json)](https://cov.celemas.dev/celemas/router/types)
-[![psalm level](https://img.shields.io/endpoint?url=https%3A%2F%2Fcov.celemas.dev%2Fcelemas%2Frouter%2Ftypes%2Fbadge-level.json)](https://cov.celemas.dev/celemas/router/types)
+[![ci](https://codeberg.org/celema/router/badges/workflows/ci.yml/badge.svg?style=flat&logo=codeberg&logoColor=white&label=ci)](https://codeberg.org/celema/router/actions)
+[![code coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fcov.celema.dev%2Fcelema%2Frouter%2Fcode%2Fbadge.json)](https://cov.celema.dev/celema/router/code)
+[![type coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fcov.celema.dev%2Fcelema%2Frouter%2Ftypes%2Fbadge-cover.json)](https://cov.celema.dev/celema/router/types)
+[![psalm level](https://img.shields.io/endpoint?url=https%3A%2F%2Fcov.celema.dev%2Fcelema%2Frouter%2Ftypes%2Fbadge-level.json)](https://cov.celema.dev/celema/router/types)
 [![Software License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 <!-- prettier-ignore-end -->
 
@@ -15,9 +15,9 @@ Using your PSR-7 request and response factory:
 ```php
 <?php
 
-use Celemas\Router\Dispatcher;
-use Celemas\Router\Router;
-use Celemas\Router\RoutingHandler;
+use Celema\Router\Dispatcher;
+use Celema\Router\Router;
+use Celema\Router\RoutingHandler;
 
 $router = new Router();
 $router->get('/{name}', function (string $name) use ($responseFactory) {
@@ -36,7 +36,7 @@ $response = $handler->handle($request);
 Define routes directly or inside callback groups. Configure groups only inside the group callback. Groups apply their prefix, name prefix, middleware, `Before` handlers, `After` handlers, and controller to every route in the group, even when those settings are declared after the route lines in the callback.
 
 ```php
-use Celemas\Router\Group;
+use Celema\Router\Group;
 
 $router->get('/health', [HealthController::class, 'show'], 'health');
 $router->map(['GET', 'POST'], '/login', [AuthController::class, 'login'], 'login');
