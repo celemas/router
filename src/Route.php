@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router;
+namespace Celema\Router;
 
-use Celemas\Router\Exception\ValueError;
+use Celema\Router\Exception\ValueError;
 use Closure;
 
 /**

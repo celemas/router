@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests\Fixtures;
+namespace Celema\Router\Tests\Fixtures;
 
-use Celemas\Router\Before;
+use Celema\Router\Before;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class TestBeforeFirst implements Before

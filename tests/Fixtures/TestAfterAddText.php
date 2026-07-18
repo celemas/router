@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests\Fixtures;
+namespace Celema\Router\Tests\Fixtures;
 
-use Celemas\Router\After;
+use Celema\Router\After;
 use Psr\Http\Message\ResponseInterface as Response;
 use RuntimeException;
 

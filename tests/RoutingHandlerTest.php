@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests;
+namespace Celema\Router\Tests;
 
-use Celemas\Router\Dispatcher;
-use Celemas\Router\Exception\MethodNotAllowedException;
-use Celemas\Router\Exception\NotFoundException;
-use Celemas\Router\Router;
-use Celemas\Router\RoutingHandler;
-use Celemas\Router\Tests\Fixtures\TestBeforeFirst;
-use Celemas\Router\Tests\Fixtures\TestBeforeSecond;
-use Celemas\Router\Tests\Fixtures\TestMiddleware1;
-use Celemas\Router\Tests\Fixtures\TestMiddleware2;
-use Celemas\Router\Tests\Fixtures\TestMiddleware3;
+use Celema\Router\Dispatcher;
+use Celema\Router\Exception\MethodNotAllowedException;
+use Celema\Router\Exception\NotFoundException;
+use Celema\Router\Router;
+use Celema\Router\RoutingHandler;
+use Celema\Router\Tests\Fixtures\TestBeforeFirst;
+use Celema\Router\Tests\Fixtures\TestBeforeSecond;
+use Celema\Router\Tests\Fixtures\TestMiddleware1;
+use Celema\Router\Tests\Fixtures\TestMiddleware2;
+use Celema\Router\Tests\Fixtures\TestMiddleware3;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -112,14 +112,14 @@ final class RoutingHandlerTest extends TestCase
 	public function testAfterHandlersRenderViewData(): void
 	{
 		$router = new Router();
-		$router->get('/', static fn(): string => 'celemas');
+		$router->get('/', static fn(): string => 'celema');
 		$dispatcher = new Dispatcher();
 		$dispatcher->after($this->renderer());
 		$handler = new RoutingHandler($router, $dispatcher);
 
 		$response = $handler->handle($this->request('GET', '/'));
 
-		$this->assertSame('celemas', (string) $response->getBody());
+		$this->assertSame('celema', (string) $response->getBody());
 	}
 
 	public function testNotFoundBubbles(): void

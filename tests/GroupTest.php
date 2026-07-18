@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests;
+namespace Celema\Router\Tests;
 
-use Celemas\Router\Exception\MethodNotAllowedException;
-use Celemas\Router\Exception\RuntimeException;
-use Celemas\Router\Exception\ValueError;
-use Celemas\Router\Group;
-use Celemas\Router\Route;
-use Celemas\Router\Router;
-use Celemas\Router\Tests\Fixtures\TestAfterAddText;
-use Celemas\Router\Tests\Fixtures\TestBeforeFirst;
-use Celemas\Router\Tests\Fixtures\TestController;
-use Celemas\Router\Tests\Fixtures\TestMiddleware1;
-use Celemas\Router\Tests\Fixtures\TestMiddleware2;
-use Celemas\Router\Tests\Fixtures\TestMiddleware3;
+use Celema\Router\Exception\MethodNotAllowedException;
+use Celema\Router\Exception\RuntimeException;
+use Celema\Router\Exception\ValueError;
+use Celema\Router\Group;
+use Celema\Router\Route;
+use Celema\Router\Router;
+use Celema\Router\Tests\Fixtures\TestAfterAddText;
+use Celema\Router\Tests\Fixtures\TestBeforeFirst;
+use Celema\Router\Tests\Fixtures\TestController;
+use Celema\Router\Tests\Fixtures\TestMiddleware1;
+use Celema\Router\Tests\Fixtures\TestMiddleware2;
+use Celema\Router\Tests\Fixtures\TestMiddleware3;
 use Closure;
 
 class GroupTest extends TestCase

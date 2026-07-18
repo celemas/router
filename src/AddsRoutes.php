@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router;
+namespace Celema\Router;
 
 /** @psalm-require-implements RouteAdder */
 trait AddsRoutes

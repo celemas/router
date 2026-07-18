@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Exception;
+namespace Celema\Router\Exception;
 
 use Throwable;
 

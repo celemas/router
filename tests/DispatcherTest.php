@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests;
+namespace Celema\Router\Tests;
 
-use Celemas\Router\Dispatcher;
-use Celemas\Router\Route;
-use Celemas\Router\Router;
-use Celemas\Router\Tests\Fixtures\TestAfterAddText;
-use Celemas\Router\Tests\Fixtures\TestAfterRendererText;
-use Celemas\Router\Tests\Fixtures\TestBeforeFirst;
-use Celemas\Router\Tests\Fixtures\TestBeforeSecond;
-use Celemas\Router\Tests\Fixtures\TestMiddleware1;
-use Celemas\Router\Tests\Fixtures\TestMiddleware2;
-use Celemas\Router\Tests\Fixtures\TestMiddleware3;
+use Celema\Router\Dispatcher;
+use Celema\Router\Route;
+use Celema\Router\Router;
+use Celema\Router\Tests\Fixtures\TestAfterAddText;
+use Celema\Router\Tests\Fixtures\TestAfterRendererText;
+use Celema\Router\Tests\Fixtures\TestBeforeFirst;
+use Celema\Router\Tests\Fixtures\TestBeforeSecond;
+use Celema\Router\Tests\Fixtures\TestMiddleware1;
+use Celema\Router\Tests\Fixtures\TestMiddleware2;
+use Celema\Router\Tests\Fixtures\TestMiddleware3;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -25,7 +25,7 @@ class DispatcherTest extends TestCase
 			'/',
 			function () {
 				$response = $this->responseFactory()->createResponse()->withHeader('Content-Type', 'text/html');
-				$response->getBody()->write('Celemas');
+				$response->getBody()->write('Celema');
 
 				return $response;
 			},
@@ -33,7 +33,7 @@ class DispatcherTest extends TestCase
 		$dispatcher = new Dispatcher();
 		$response = $dispatcher->dispatch($this->request('GET', '/'), $this->routeMatch($route));
 		$this->assertInstanceOf(Response::class, $response);
-		$this->assertSame('Celemas', (string) $response->getBody());
+		$this->assertSame('Celema', (string) $response->getBody());
 	}
 
 	public function testAddMiddleware(): void

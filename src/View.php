@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router;
+namespace Celema\Router;
 
-use Celemas\Router\Exception\RuntimeException;
-use Celemas\Wire\Creator;
-use Celemas\Wire\Exception\WireException;
+use Celema\Router\Exception\RuntimeException;
+use Celema\Wire\Creator;
+use Celema\Wire\Exception\WireException;
 use Closure;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ResponseInterface as Response;

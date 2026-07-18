@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests\Fixtures;
+namespace Celema\Router\Tests\Fixtures;
 
 use Attribute;
-use Celemas\Wire\Call;
+use Celema\Wire\Call;
 
 #[Attribute]
 #[Call('init')]

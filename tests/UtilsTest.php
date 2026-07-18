@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests;
+namespace Celema\Router\Tests;
 
 use PHPUnit\Framework\Attributes\TestDox;
 use ReflectionFunction;
 use ReflectionMethod;
 
-use function Celemas\Router\getReflectionFunction;
+use function Celema\Router\getReflectionFunction;
 
 class UtilsTest extends TestCase
 {

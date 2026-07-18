@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router;
+namespace Celema\Router;
 
-use Celemas\Router\Exception\RuntimeException;
+use Celema\Router\Exception\RuntimeException;
 use Closure;
 use Override;
 use Psr\Http\Server\MiddlewareInterface as Middleware;

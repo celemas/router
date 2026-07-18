@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router;
+namespace Celema\Router;
 
-use Celemas\Router\Exception\InvalidArgumentException;
-use Celemas\Router\Exception\MethodNotAllowedException;
-use Celemas\Router\Exception\NotFoundException;
-use Celemas\Router\Exception\RuntimeException;
+use Celema\Router\Exception\InvalidArgumentException;
+use Celema\Router\Exception\MethodNotAllowedException;
+use Celema\Router\Exception\NotFoundException;
+use Celema\Router\Exception\RuntimeException;
 use Closure;
 use Override;
 use Psr\Http\Message\ServerRequestInterface as Request;

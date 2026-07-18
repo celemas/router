@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests;
+namespace Celema\Router\Tests;
 
-use Celemas\Router\Route;
-use Celemas\Router\RouteMatch;
+use Celema\Router\Route;
+use Celema\Router\RouteMatch;
 
 class RouteMatchTest extends TestCase
 {

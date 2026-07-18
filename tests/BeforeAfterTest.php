@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests;
+namespace Celema\Router\Tests;
 
-use Celemas\Router\Dispatcher;
-use Celemas\Router\Group;
-use Celemas\Router\Route;
-use Celemas\Router\Router;
-use Celemas\Router\Tests\Fixtures\TestAfterAddHeader;
-use Celemas\Router\Tests\Fixtures\TestAfterAddText;
-use Celemas\Router\Tests\Fixtures\TestAfterRendererJson;
-use Celemas\Router\Tests\Fixtures\TestAfterRendererText;
-use Celemas\Router\Tests\Fixtures\TestBeforeFirst;
-use Celemas\Router\Tests\Fixtures\TestBeforeReplace;
-use Celemas\Router\Tests\Fixtures\TestBeforeSecond;
-use Celemas\Router\Tests\Fixtures\TestBeforeThird;
-use Celemas\Router\View;
+use Celema\Router\Dispatcher;
+use Celema\Router\Group;
+use Celema\Router\Route;
+use Celema\Router\Router;
+use Celema\Router\Tests\Fixtures\TestAfterAddHeader;
+use Celema\Router\Tests\Fixtures\TestAfterAddText;
+use Celema\Router\Tests\Fixtures\TestAfterRendererJson;
+use Celema\Router\Tests\Fixtures\TestAfterRendererText;
+use Celema\Router\Tests\Fixtures\TestBeforeFirst;
+use Celema\Router\Tests\Fixtures\TestBeforeReplace;
+use Celema\Router\Tests\Fixtures\TestBeforeSecond;
+use Celema\Router\Tests\Fixtures\TestBeforeThird;
+use Celema\Router\View;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -130,7 +130,7 @@ class BeforeAfterTest extends TestCase
 
 	public function testViewBeforeHandler(): void
 	{
-		$route = Route::any('/', static fn() => 'celemas')
+		$route = Route::any('/', static fn() => 'celema')
 			->before(new TestBeforeReplace())
 			->before(new TestBeforeThird());
 		$view = new View(
@@ -148,7 +148,7 @@ class BeforeAfterTest extends TestCase
 	public function testViewAfterHandler(): void
 	{
 		$factory = $this->responseFactory();
-		$route = Route::any('/', static fn() => 'celemas')
+		$route = Route::any('/', static fn() => 'celema')
 			->after(new TestAfterRendererText($factory))
 			->after(new TestAfterAddText());
 		$view = new View(
@@ -197,7 +197,7 @@ class BeforeAfterTest extends TestCase
 		$factory = $this->responseFactory();
 		$route = new Route(
 			'/',
-			static fn() => 'Celemas',
+			static fn() => 'Celema',
 		);
 		$route->after(new TestAfterRendererText($factory))->after(new TestAfterAddHeader());
 		$dispatcher = new Dispatcher();
@@ -206,7 +206,7 @@ class BeforeAfterTest extends TestCase
 		$response = $dispatcher->dispatch($this->request('GET', '/'), $this->routeMatch($route));
 
 		$this->assertInstanceOf(Response::class, $response);
-		$this->assertSame('Celemas-appended', (string) $response->getBody());
+		$this->assertSame('Celema-appended', (string) $response->getBody());
 		$this->assertSame('header-value', (string) $response->getHeaderLine('added-header'));
 		$this->assertSame('text/plain', (string) $response->getHeaderLine('Content-Type'));
 	}

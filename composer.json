@@ -1,18 +1,18 @@
 {
-	"name": "celemas/router",
+	"name": "celema/router",
 	"description": "PSR-7/PSR-15 router and dispatcher",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "Ernst",
-			"email": "ernst@celemas.dev"
+			"email": "ernst@celema.dev"
 		}
 	],
-	"homepage": "https://celemas.dev/router",
+	"homepage": "https://celema.dev/router",
 	"autoload": {
 		"psr-4": {
-			"Celemas\\Router\\": "src/"
+			"Celema\\Router\\": "src/"
 		},
 		"files": [
 			"src/Utils.php"
@@ -20,7 +20,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Celemas\\Router\\Tests\\": "tests/"
+			"Celema\\Router\\Tests\\": "tests/"
 		},
 		"files": [
 			"tests/Fixtures/globalTestSymbols.php"
@@ -28,15 +28,15 @@
 	},
 	"require": {
 		"php": "^8.5",
-		"celemas/wire": "v0.6.0",
 		"psr/container": "^2.0",
 		"psr/http-message": "^1.1 || ^2.0",
 		"psr/http-message-implementation": "^1.0",
 		"psr/http-server-handler": "^1.0",
-		"psr/http-server-middleware": "^1.0"
+		"psr/http-server-middleware": "^1.0",
+		"celema/wire": "^0.7"
 	},
 	"require-dev": {
-		"celemas/dev": "^4.2",
+		"celema/dev": "^5.0",
 		"laminas/laminas-diactoros": "^3.3"
 	},
 	"scripts": {
@@ -47,7 +47,7 @@
 			"./vendor/bin/mago lint"
 		],
 		"docs:format": "npx prettier@3.6.2 --write --config ./docs/.prettierrc README.md CHANGELOG.md LICENSE.md docs/",
-		"docs:lint": "npx markdownlint-cli2@0.22.1 --config ./vendor/celemas/dev/config/markdownlint.jsonc README.md CHANGELOG.md LICENSE.md docs/",
+		"docs:lint": "npx markdownlint-cli2@0.22.1 --config ./vendor/celema/dev/config/markdownlint.jsonc README.md CHANGELOG.md LICENSE.md docs/",
 		"coverage:test": "php -d xdebug.mode=coverage ./vendor/bin/phpunit --testdox --path-coverage --colors=always",
 		"coverage:analyze": "./vendor/bin/coverlyzer .coverage/coverage.php",
 		"coverage": [

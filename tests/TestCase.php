@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests;
+namespace Celema\Router\Tests;
 
-use Celemas\Router\Route;
-use Celemas\Router\RouteMatch;
-use Celemas\Router\Tests\Fixtures\TestAfterRendererText;
+use Celema\Router\Route;
+use Celema\Router\RouteMatch;
+use Celema\Router\Tests\Fixtures\TestAfterRendererText;
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\Uri;

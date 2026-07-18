@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router;
+namespace Celema\Router;
 
 use Override;
 use Psr\Container\ContainerInterface as Container;

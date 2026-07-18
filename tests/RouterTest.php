@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests;
+namespace Celema\Router\Tests;
 
-use Celemas\Router\Exception\InvalidArgumentException;
-use Celemas\Router\Exception\MethodNotAllowedException;
-use Celemas\Router\Exception\NotFoundException;
-use Celemas\Router\Exception\RuntimeException;
-use Celemas\Router\Exception\ValueError;
-use Celemas\Router\Group;
-use Celemas\Router\Route;
-use Celemas\Router\RouteMatch;
-use Celemas\Router\Router;
-use Celemas\Router\Tests\Fixtures\TestController;
+use Celema\Router\Exception\InvalidArgumentException;
+use Celema\Router\Exception\MethodNotAllowedException;
+use Celema\Router\Exception\NotFoundException;
+use Celema\Router\Exception\RuntimeException;
+use Celema\Router\Exception\ValueError;
+use Celema\Router\Group;
+use Celema\Router\Route;
+use Celema\Router\RouteMatch;
+use Celema\Router\Router;
+use Celema\Router\Tests\Fixtures\TestController;
 use PHPUnit\Framework\Attributes\TestDox;
 
 class RouterTest extends TestCase
@@ -186,12 +186,12 @@ class RouterTest extends TestCase
 		$router->get('/albums/{id:\d+}', static fn() => null, 'albums.show');
 
 		$this->assertSame(
-			'https://celemas.dev/cms/albums/13?page=2&sort=death%20metal',
+			'https://celema.dev/cms/albums/13?page=2&sort=death%20metal',
 			$router->url(
 				'albums.show',
 				['id' => 13],
 				query: ['page' => 2, 'sort' => 'death metal', 'empty' => null],
-				host: 'https://celemas.dev/',
+				host: 'https://celema.dev/',
 			),
 		);
 	}

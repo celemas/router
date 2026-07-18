@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router;
+namespace Celema\Router;
 
-use Celemas\Router\Exception\InvalidArgumentException;
-use Celemas\Router\Exception\ValueError;
+use Celema\Router\Exception\InvalidArgumentException;
+use Celema\Router\Exception\ValueError;
 use Stringable;
 
 /** @internal */

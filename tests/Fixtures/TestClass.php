@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests\Fixtures;
+namespace Celema\Router\Tests\Fixtures;
 
 class TestClass {}

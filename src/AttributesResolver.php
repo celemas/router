@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router;
+namespace Celema\Router;
 
-use Celemas\Wire\Call;
-use Celemas\Wire\CallableResolver;
-use Celemas\Wire\Creator;
+use Celema\Wire\Call;
+use Celema\Wire\CallableResolver;
+use Celema\Wire\Creator;
 use Psr\Container\ContainerInterface as Container;
 use ReflectionAttribute;
 use ReflectionClass;

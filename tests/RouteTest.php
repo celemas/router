@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Celemas\Router\Tests;
+namespace Celema\Router\Tests;
 
-use Celemas\Router\Exception\InvalidArgumentException;
-use Celemas\Router\Exception\ValueError;
-use Celemas\Router\Route;
-use Celemas\Router\Tests\Fixtures\TestMiddleware1;
-use Celemas\Router\Tests\Fixtures\TestMiddleware2;
+use Celema\Router\Exception\InvalidArgumentException;
+use Celema\Router\Exception\ValueError;
+use Celema\Router\Route;
+use Celema\Router\Tests\Fixtures\TestMiddleware1;
+use Celema\Router\Tests\Fixtures\TestMiddleware2;
 use stdClass;
 
 class RouteTest extends TestCase
@@ -205,9 +205,9 @@ class RouteTest extends TestCase
 
 	public function testGetViewArray(): void
 	{
-		$route = new Route('/', [\Celemas\Router\Tests\Fixtures\TestController::class, 'textView']);
+		$route = new Route('/', [\Celema\Router\Tests\Fixtures\TestController::class, 'textView']);
 
-		$this->assertSame(['Celemas\Router\Tests\Fixtures\TestController', 'textView'], $route->view());
+		$this->assertSame(['Celema\Router\Tests\Fixtures\TestController', 'textView'], $route->view());
 	}
 
 	public function testRouteMap(): void
