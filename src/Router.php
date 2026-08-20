@@ -85,9 +85,9 @@ class Router implements RouteAdder
 		if (array_key_exists($name, $this->staticRoutes)) {
 			throw new RuntimeException(
 				'Duplicate static route: '
-				. $name
-				. '. If you want to use the same '
-				. 'url prefix you have to create static routes with names.',
+					. $name
+					. '. If you want to use the same '
+					. 'url prefix you have to create static routes with names.',
 			);
 		}
 
@@ -262,7 +262,7 @@ class Router implements RouteAdder
 		}
 
 		throw new InvalidArgumentException('Query parameter must be scalar or a list of scalars: '
-		. $name);
+			. $name);
 	}
 
 	protected function getCacheBuster(string $dir, string $path): string

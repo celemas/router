@@ -118,9 +118,9 @@ final class View
 
 		throw new RuntimeException(
 			'Route action string is not callable: '
-			. $view
-			. ". Use a callable, [Controller::class, 'method'], an invokable controller class, "
-			. 'or a controller group.',
+				. $view
+				. ". Use a callable, [Controller::class, 'method'], an invokable controller class, "
+				. 'or a controller group.',
 		);
 	}
 
@@ -129,9 +129,9 @@ final class View
 	{
 		if (
 			!is_string($controllerName)
-			|| $controllerName === ''
-			|| !is_string($method)
-			|| $method === ''
+				|| $controllerName === ''
+				|| !is_string($method)
+				|| $method === ''
 		) {
 			throw new RuntimeException("Controller actions must use [Controller::class, 'method'].");
 		}
@@ -260,14 +260,12 @@ final class View
 		}
 		if ($type) {
 			throw new RuntimeException(
-				"Autowiring does not support union or intersection types. Source: \n"
-					. $this->paramInfo($param),
+				"Autowiring does not support union or intersection types. Source: \n" . $this->paramInfo($param),
 			);
 		}
 
 		throw new RuntimeException(
-			"Autowired entities need to have typed constructor parameters. Source: \n"
-				. $this->paramInfo($param),
+			"Autowired entities need to have typed constructor parameters. Source: \n" . $this->paramInfo($param),
 		);
 	}
 
@@ -283,12 +281,12 @@ final class View
 
 		return (
 			($rc ? $rc->getName() . '::' : '')
-			. $rf->getName()
-			. '(..., '
-			. ($type ? (string) $type . ' ' : '')
-			. '$'
-			. $param->getName()
-			. ', ...)'
+				. $rf->getName()
+				. '(..., '
+				. ($type ? (string) $type . ' ' : '')
+				. '$'
+				. $param->getName()
+				. ', ...)'
 		);
 	}
 

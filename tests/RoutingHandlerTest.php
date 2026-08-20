@@ -44,9 +44,7 @@ final class RoutingHandlerTest extends TestCase
 		$router
 			->get(
 				'/albums/{name}',
-				static fn(Request $request, string $name): string => (
-					$request->getAttribute('mw1') . '|' . $name
-				),
+				static fn(Request $request, string $name): string => $request->getAttribute('mw1') . '|' . $name,
 			)
 			->middleware(new TestMiddleware1())
 			->after($this->renderer());

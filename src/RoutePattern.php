@@ -141,7 +141,7 @@ final readonly class RoutePattern
 	{
 		if (str_contains($value, "\0") || str_contains($value, '\\') || str_starts_with($value, '/')) {
 			throw new InvalidArgumentException('Remainder route parameter must be a relative path: '
-			. $name);
+				. $name);
 		}
 
 		foreach (explode('/', $value) as $segment) {
