@@ -129,9 +129,9 @@ final class View
 	{
 		if (
 			!is_string($controllerName)
-				|| $controllerName === ''
-				|| !is_string($method)
-				|| $method === ''
+			|| $controllerName === ''
+			|| !is_string($method)
+			|| $method === ''
 		) {
 			throw new RuntimeException("Controller actions must use [Controller::class, 'method'].");
 		}
