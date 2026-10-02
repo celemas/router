@@ -256,7 +256,8 @@ final class View
 				);
 			}
 
-			return $this->creator->create($typeName, predefinedTypes: [Request::class => $request]);
+			// Registered ids come from the container, which owns their lifetime.
+			return $this->creator->resolve($typeName, predefinedTypes: [Request::class => $request]);
 		}
 		if ($type) {
 			throw new RuntimeException(

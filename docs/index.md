@@ -182,6 +182,12 @@ $response = (new Dispatcher())->dispatch($request, $match, $container);
 
 `Router::match()` returns a `RouteMatch`. It does not mutate the matched route, so route parameters stay request-local.
 
+### Long-running processes
+
+A router, its routes, and its dispatcher can serve many requests, for example in a worker that keeps the application in memory. Pass the container of the current request scope to `RoutingHandler` or `Dispatcher::dispatch()` so view arguments resolve in that scope.
+
+Objects attached to the router live as long as the router: middleware instances, `Before` and `After` handler instances, and invokable objects used as views. They must not keep state of a single request; take request data from the request passed to them. Controllers and attribute handlers are created per dispatch.
+
 ## Middleware, before handlers, and after handlers
 
 Add PSR-15 middleware to the dispatcher, a group, or a route:
@@ -290,7 +296,9 @@ $router->get('/debug', function (Request $request, Route $route) use ($responseF
 });
 ```
 
-Other class or interface typed arguments are autowired through `celema/wire`. If a parameter has a default value, the default is used when that argument cannot be resolved.
+Other class or interface typed arguments of views and controller constructors are resolved through `celema/wire`: an id registered in the container comes from the container, so its lifetime applies (for example one instance per request scope); other classes are created per dispatch. If a parameter has a default value, the default is used when that argument cannot be resolved.
+
+Controllers are constructed anew for every dispatch.
 
 A view must return a PSR-7 response or a `ResponseWrapper`. If a view returns arbitrary data, add an `After` handler that converts that data to a response.
 

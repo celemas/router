@@ -2,7 +2,9 @@
 
 ## [Unreleased](https://codefloe.com/celema/router/compare/0.4.0...HEAD)
 
-No notable changes since the last release.
+### Changed
+
+- Require `celema/wire` 0.8. View and controller constructor arguments with a registered id are resolved with `Creator::resolve()`, so the container's lifetime applies. Before, a class-string entry of a `celema/container` instance was constructed anew on every dispatch, even when it was registered as shared or scoped.
 
 ## [0.4.0](https://codefloe.com/celema/router/src/tag/0.4.0) (2026-07-18)
 
