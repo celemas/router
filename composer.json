@@ -33,7 +33,7 @@
 		"psr/http-message-implementation": "^1.0",
 		"psr/http-server-handler": "^1.0",
 		"psr/http-server-middleware": "^1.0",
-		"celema/wire": "^0.7"
+		"celema/wire": "^0.8"
 	},
 	"require-dev": {
 		"carthage-software/mago": "1.50.0",
