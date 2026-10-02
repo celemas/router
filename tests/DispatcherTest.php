@@ -11,6 +11,8 @@ use Celema\Router\Tests\Fixtures\TestAfterAddText;
 use Celema\Router\Tests\Fixtures\TestAfterRendererText;
 use Celema\Router\Tests\Fixtures\TestBeforeFirst;
 use Celema\Router\Tests\Fixtures\TestBeforeSecond;
+use Celema\Router\Tests\Fixtures\TestClass;
+use Celema\Router\Tests\Fixtures\TestContainer;
 use Celema\Router\Tests\Fixtures\TestMiddleware1;
 use Celema\Router\Tests\Fixtures\TestMiddleware2;
 use Celema\Router\Tests\Fixtures\TestMiddleware3;
@@ -85,6 +87,29 @@ class DispatcherTest extends TestCase
 
 		$this->assertSame('symbolic', (string) $first->getBody());
 		$this->assertSame('leprosy', (string) $second->getBody());
+	}
+
+	public function testDispatchResolvesServicesFromTheCurrentContainer(): void
+	{
+		$received = [];
+		$router = new Router();
+		$router->get('/', static function (TestClass $service) use (&$received): string {
+			$received[] = $service;
+
+			return 'ok';
+		})->after($this->renderer());
+		$dispatcher = new Dispatcher();
+		$firstService = new TestClass();
+		$secondService = new TestClass();
+		$firstContainer = new TestContainer([TestClass::class => $firstService]);
+		$secondContainer = new TestContainer([TestClass::class => $secondService]);
+		$firstRequest = $this->request('GET', '/');
+		$secondRequest = $this->request('GET', '/');
+
+		$dispatcher->dispatch($firstRequest, $router->match($firstRequest), $firstContainer);
+		$dispatcher->dispatch($secondRequest, $router->match($secondRequest), $secondContainer);
+
+		$this->assertSame([$firstService, $secondService], $received);
 	}
 
 	public function testDispatchMiddlewareApplied(): void
