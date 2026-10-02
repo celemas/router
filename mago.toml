@@ -33,3 +33,4 @@ too-many-methods = { enabled = false }
 kan-defect = { enabled = false }
 cyclomatic-complexity = { enabled = false }
 no-boolean-flag-parameter = { enabled = false }
+prefer-early-continue = { enabled = false }
