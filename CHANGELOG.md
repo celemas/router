@@ -2,7 +2,9 @@
 
 ## [Unreleased](https://codefloe.com/celema/router/compare/0.5.0...HEAD)
 
-No notable changes since the last release.
+### Fixed
+
+- HEAD requests match GET routes, as RFC 9110 requires every general-purpose server to support HEAD wherever it supports GET. Before, a HEAD request to a GET route got a 405 response. A HEAD route for the same path still takes precedence, and `MethodNotAllowedException::allowedMethods()` lists HEAD wherever GET is allowed.
 
 ## [0.5.0](https://codefloe.com/celema/router/src/tag/0.5.0) (2026-10-02)
 

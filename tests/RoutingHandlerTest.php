@@ -139,7 +139,7 @@ final class RoutingHandlerTest extends TestCase
 			$handler->handle($this->request('POST', '/albums'));
 			$this->fail('Expected MethodNotAllowedException to bubble.');
 		} catch (MethodNotAllowedException $e) {
-			$this->assertSame(['GET'], $e->allowedMethods());
+			$this->assertSame(['GET', 'HEAD'], $e->allowedMethods());
 		}
 	}
 }

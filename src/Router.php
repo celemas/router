@@ -157,8 +157,11 @@ class Router implements RouteAdder
 	{
 		$url = rawurldecode($request->getUri()->getPath());
 		$requestMethod = strtoupper($request->getMethod());
+		// HEAD is GET without a body (RFC 9110), so GET routes answer it
+		// unless a HEAD route matches first.
+		$methods = $requestMethod === 'HEAD' ? ['HEAD', 'GET', self::ANY] : [$requestMethod, self::ANY];
 
-		foreach ([$requestMethod, self::ANY] as $method) {
+		foreach ($methods as $method) {
 			foreach ($this->routes[$method] ?? [] as $route) {
 				$params = $route->match($url, $this->globalPrefix);
 
@@ -182,6 +185,10 @@ class Router implements RouteAdder
 				}
 
 				$allowedMethods[] = $method;
+
+				if ($method === 'GET') {
+					$allowedMethods[] = 'HEAD';
+				}
 
 				break;
 			}

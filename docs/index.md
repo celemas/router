@@ -49,6 +49,8 @@ $router->any('/webhook', $webhook, 'webhook');
 
 `map()` requires at least one method. Method names are normalized to uppercase.
 
+GET routes also answer HEAD requests, as HTTP requires: HEAD is GET without a response body. A HEAD route for the same path takes precedence, for example to answer without rendering the body. Removing the body is up to the emitter.
+
 Available helpers are:
 
 - `any()`
@@ -166,7 +168,7 @@ $response = $handler->handle($request);
 
 The container is optional. When provided, it is used while constructing controllers, autowiring view arguments, and resolving `#[Call]` hooks on attributes.
 
-`RoutingHandler` lets `NotFoundException` and `MethodNotAllowedException` bubble by default so your application can render 404 and 405 responses. `MethodNotAllowedException::allowedMethods()` returns the allowed method list.
+`RoutingHandler` lets `NotFoundException` and `MethodNotAllowedException` bubble by default so your application can render 404 and 405 responses. `MethodNotAllowedException::allowedMethods()` returns the allowed method list, including HEAD wherever GET is allowed.
 
 Use the low-level match and dispatch APIs when you need to inspect the route before execution:
 

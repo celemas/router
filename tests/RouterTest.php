@@ -139,7 +139,7 @@ class RouterTest extends TestCase
 			$router->match($this->request('PUT', '/login'));
 			$this->fail('Expected method not allowed exception.');
 		} catch (MethodNotAllowedException $e) {
-			$this->assertSame(['GET', 'POST'], $e->allowedMethods());
+			$this->assertSame(['GET', 'HEAD', 'POST'], $e->allowedMethods());
 		}
 	}
 
@@ -275,6 +275,42 @@ class RouterTest extends TestCase
 		$this->assertSame($route, $router->match($this->request('HEAD', '/'))->route());
 	}
 
+	#[TestDox('HEAD requests match GET routes')]
+	public function testHeadRequestsMatchGetRoutes(): void
+	{
+		$router = new Router();
+		$route = $router->get('/albums/{id}', static fn() => null);
+
+		$match = $router->match($this->request('HEAD', '/albums/13'));
+
+		$this->assertSame($route, $match->route());
+		$this->assertSame(['id' => '13'], $match->params());
+		$this->assertSame('HEAD', $match->method());
+	}
+
+	#[TestDox('HEAD routes take precedence over GET routes')]
+	public function testHeadRoutesTakePrecedenceOverGetRoutes(): void
+	{
+		$router = new Router();
+		$router->get('/', static fn() => null);
+		$head = $router->head('/', static fn() => null);
+
+		$this->assertSame($head, $router->match($this->request('HEAD', '/'))->route());
+	}
+
+	#[TestDox('HEAD requests match the route GET requests match')]
+	public function testHeadRequestsMatchTheRouteGetRequestsMatch(): void
+	{
+		$router = new Router();
+		$router->any('/page', static fn() => null);
+		$router->get('/page', static fn() => null);
+
+		$this->assertSame(
+			$router->match($this->request('GET', '/page'))->route(),
+			$router->match($this->request('HEAD', '/page'))->route(),
+		);
+	}
+
 	#[TestDox('PUT matching')]
 	public function testPUTMatching(): void
 	{
@@ -344,7 +380,21 @@ class RouterTest extends TestCase
 			$router->match($this->request('POST', '/'));
 			$this->fail('Expected method not allowed exception.');
 		} catch (MethodNotAllowedException $e) {
-			$this->assertSame(['GET', 'PUT'], $e->allowedMethods());
+			$this->assertSame(['GET', 'HEAD', 'PUT'], $e->allowedMethods());
+		}
+	}
+
+	public function testAllowedMethodsListHeadOnce(): void
+	{
+		$router = new Router();
+		$router->get('/', static fn() => null);
+		$router->head('/', static fn() => null);
+
+		try {
+			$router->match($this->request('POST', '/'));
+			$this->fail('Expected method not allowed exception.');
+		} catch (MethodNotAllowedException $e) {
+			$this->assertSame(['GET', 'HEAD'], $e->allowedMethods());
 		}
 	}
 
