@@ -9,10 +9,84 @@
 		html: '.infection/infection.html',
 		summary: '.infection/summary.log',
 	},
+	// Ratchet: raise these with the reached score, never lower them.
+	minMsi: 99,
+	minCoveredMsi: 99,
 	// CI mutates only the lines changed by a push; pushes without source
 	// changes produce no mutants and must not fail the threshold.
 	ignoreMsiWithNoMutations: true,
+	// Ignores below cover equivalent mutants: they change no observable behavior.
+	// Keep them scoped to a method so that new code elsewhere is still mutated.
 	mutators: {
 		'@default': true,
+
+		// Visibility: the trait's merge helpers are public API of routes, groups
+		// and the dispatcher, and protected extension points for subclasses of
+		// the non-final Route and Router. View is internal and final.
+		PublicVisibility: {
+			ignore: [
+				'Celema\\Router\\AddsBeforeAfter::mergeBeforeHandlers',
+				'Celema\\Router\\AddsBeforeAfter::mergeAfterHandlers',
+				'Celema\\Router\\View::paramInfo',
+			],
+		},
+		ProtectedVisibility: {
+			ignore: [
+				'Celema\\Router\\AddsBeforeAfter::doMergeBeforeHandlers',
+				'Celema\\Router\\AddsBeforeAfter::doMergeAfterHandlers',
+				'Celema\\Router\\Router::getCacheBuster',
+			],
+		},
+
+		// Fast paths and caches: skipping them computes the same result.
+		GreaterThan: {
+			// Without Call attributes the loop does nothing.
+			ignore: ['Celema\\Router\\AttributesResolver::newAttributeInstance'],
+		},
+		AssignCoalesce: {
+			ignore: ['Celema\\Router\\Route::routePattern'],
+		},
+		Break_: {
+			// MethodNotAllowedException removes duplicate methods.
+			ignore: ['Celema\\Router\\Router::match'],
+		},
+
+		// A path outside the prefix leaves a remainder without a leading slash,
+		// which no compiled route pattern matches. (The matching `return null;`
+		// escapes too, but shares its text with a killed mutant in the method.)
+		ConcatOperandRemoval: {
+			ignore: ['Celema\\Router\\Route::pathWithoutPrefix'],
+		},
+
+		// String casts of values that are already strings at runtime: token
+		// names of parameters and remainders are never null (the casts narrow
+		// the type for static analysis), and concatenation converts the rest.
+		CastString: {
+			ignore: [
+				'Celema\\Router\\RoutePattern::generateParameter',
+				'Celema\\Router\\RoutePattern::generateRemainder',
+				'Celema\\Router\\RoutePattern::assertKnownParams',
+				'Celema\\Router\\RoutePattern::compileParameter',
+				'Celema\\Router\\RoutePattern::compileRemainder',
+				'Celema\\Router\\View::paramInfo',
+			],
+		},
+		TrueValue: {
+			// Names are only checked with array_key_exists().
+			ignore: ['Celema\\Router\\RoutePattern::assertUniqueName'],
+		},
+
+		// Path handling: `realpath()` collapses duplicate separators and never
+		// returns a trailing one (except for `/`), and replacing `/` with the
+		// directory separator only matters on Windows.
+		UnwrapLtrim: {
+			ignore: ['Celema\\Router\\Router::getCacheBuster'],
+		},
+		UnwrapStrReplace: {
+			ignore: ['Celema\\Router\\Router::getCacheBuster'],
+		},
+		UnwrapRtrim: {
+			ignore: ['Celema\\Router\\Router::isInsideDirectory'],
+		},
 	},
 }
