@@ -189,6 +189,14 @@ class RouteTest extends TestCase
 		$this->assertNull($route->match('/api/', '/api'));
 	}
 
+	public function testPrefixedRemainderMatchesTrailingSlashWithEmptyRest(): void
+	{
+		$route = Route::get('/...rest', static fn() => 'chuck');
+
+		$this->assertSame(['rest' => ''], $route->match('/api/', '/api'));
+		$this->assertSame(['rest' => ''], $route->match('/api', '/api'));
+	}
+
 	public function testGetViewClosure(): void
 	{
 		$route = new Route('/', static fn() => 'chuck');
