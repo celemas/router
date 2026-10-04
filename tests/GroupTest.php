@@ -406,4 +406,26 @@ class GroupTest extends TestCase
 
 		$this->fail('Group configuration did not fail.');
 	}
+
+	public function testGroupIsClosedAfterItsCallbackThrows(): void
+	{
+		$router = new Router();
+		$captured = null;
+
+		try {
+			$router->group('/albums', static function (Group $group) use (&$captured): void {
+				$captured = $group;
+
+				throw new \LogicException('definition failed');
+			});
+			$this->fail('Group callback did not throw.');
+		} catch (\LogicException $e) {
+			$this->assertSame('definition failed', $e->getMessage());
+		}
+
+		$this->assertInstanceOf(Group::class, $captured);
+		$this->throws(RuntimeException::class, 'Cannot modify group outside the group callback.');
+
+		$captured->get('/late', static fn() => null);
+	}
 }

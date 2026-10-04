@@ -7,6 +7,7 @@ namespace Celema\Router\Tests;
 use Celema\Router\Exception\RuntimeException;
 use Celema\Router\Route;
 use Celema\Router\Tests\Fixtures\TestAttribute;
+use Celema\Router\Tests\Fixtures\TestAttributedController;
 use Celema\Router\Tests\Fixtures\TestAttributeDiff;
 use Celema\Router\Tests\Fixtures\TestAttributeExt;
 use Celema\Router\Tests\Fixtures\TestCallableAttribute;
@@ -14,12 +15,17 @@ use Celema\Router\Tests\Fixtures\TestController;
 use Celema\Router\Tests\Fixtures\TestControllerWithRequest;
 use Celema\Router\Tests\Fixtures\TestControllerWithRequestAndRoute;
 use Celema\Router\Tests\Fixtures\TestControllerWithRoute;
+use Celema\Router\Tests\Fixtures\TestMiddleware1;
+use Celema\Router\Tests\Fixtures\TestMiddleware2;
+use Celema\Router\Tests\Fixtures\TestRequestDependency;
 use Celema\Router\Tests\Fixtures\TestThrowingClass;
 use Celema\Router\Tests\Fixtures\TestUnresolvableClass;
 use Celema\Router\View;
 use Error;
 use GdImage;
 use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ViewTest extends TestCase
 {
@@ -101,7 +107,10 @@ class ViewTest extends TestCase
 
 	public function testNonexistentControllerView(): void
 	{
-		$this->throws(RuntimeException::class, 'Route action method not found');
+		$this->throws(
+			RuntimeException::class,
+			'Route action method not found: ' . TestController::class . '::nonexistentView',
+		);
 
 		$route = Route::any('/', [TestController::class, 'nonexistentView'])->after($this->renderer());
 		$view = new View($this->routeMatch($route), null);
@@ -110,7 +119,10 @@ class ViewTest extends TestCase
 
 	public function testNonexistentController(): void
 	{
-		$this->throws(RuntimeException::class, 'Route controller not found');
+		$this->throws(
+			RuntimeException::class,
+			'Route controller not found: ' . NonexisitentTestController::class,
+		);
 
 		$route = Route::any('/', [NonexisitentTestController::class, 'nonexistentView'])->after(
 			$this->renderer(),
@@ -121,25 +133,42 @@ class ViewTest extends TestCase
 
 	public function testBareMethodStringWithoutController(): void
 	{
-		$this->throws(RuntimeException::class, 'Route action string is not callable');
+		$this->throws(
+			RuntimeException::class,
+			"Route action string is not callable: textView. Use a callable, [Controller::class, 'method'], "
+				. 'an invokable controller class, or a controller group.',
+		);
 
 		$route = Route::any('/', 'textView')->after($this->renderer());
 		$view = new View($this->routeMatch($route), null);
 		$view->execute($this->request());
 	}
 
-	public function testInvalidControllerActionArray(): void
+	/** @param array<array-key, mixed> $action */
+	#[DataProvider('invalidControllerActions')]
+	public function testInvalidControllerActionArray(array $action): void
 	{
-		$this->throws(RuntimeException::class, 'Controller actions must use');
+		$this->throws(RuntimeException::class, "Controller actions must use [Controller::class, 'method'].");
 
-		$route = new Route('/', []);
+		$route = new Route('/', $action);
 		$view = new View($this->routeMatch($route), null);
 		$view->execute($this->request());
 	}
 
+	/** @return iterable<string, array{array<array-key, mixed>}> */
+	public static function invalidControllerActions(): iterable
+	{
+		yield 'empty' => [[]];
+		yield 'empty controller' => [['', 'arrayView']];
+		yield 'empty method' => [[TestController::class, '']];
+	}
+
 	public function testNonCallableControllerMethod(): void
 	{
-		$this->throws(RuntimeException::class, 'Route action method is not callable');
+		$this->throws(
+			RuntimeException::class,
+			'Route action method is not callable: ' . TestController::class . '::privateView',
+		);
 
 		$route = Route::any('/', [TestController::class, 'privateView'])->after($this->renderer());
 		$view = new View($this->routeMatch($route), null);
@@ -225,7 +254,12 @@ class ViewTest extends TestCase
 
 	public function testViewWithWrongRouteParams(): void
 	{
-		$this->throws(RuntimeException::class, 'cannot be resolved');
+		$this->throws(
+			RuntimeException::class,
+			"View parameters cannot be resolved. Details: Type 'string' is not a class or interface. Source: \n"
+				. TestControllerWithRequest::class
+				. '::routeParams(..., string $string, ...)',
+		);
 
 		$route = Route::any(
 			'/{wrong}/{param}',
@@ -237,7 +271,7 @@ class ViewTest extends TestCase
 
 	public function testViewWithWrongTypeForIntParam(): void
 	{
-		$this->throws(RuntimeException::class, "Cannot cast 'int' to int");
+		$this->throws(RuntimeException::class, "View parameters cannot be resolved. Details: Cannot cast 'int' to int");
 
 		$route = Route::any(
 			'/{string}/{float}-{int}',
@@ -249,7 +283,10 @@ class ViewTest extends TestCase
 
 	public function testViewWithWrongTypeForFloatParam(): void
 	{
-		$this->throws(RuntimeException::class, "Cannot cast 'float' to float");
+		$this->throws(
+			RuntimeException::class,
+			"View parameters cannot be resolved. Details: Cannot cast 'float' to float",
+		);
 
 		$route = Route::any(
 			'/{string}/{float}-{int}',
@@ -291,6 +328,18 @@ class ViewTest extends TestCase
 		$this->assertSame(2, count($view->attributes(TestAttribute::class)));
 		$this->assertSame(1, count($view->attributes(TestAttributeExt::class)));
 		$this->assertSame(1, count($view->attributes(TestAttributeDiff::class)));
+		$this->assertInstanceOf(TestAttributeDiff::class, $view->attributes(TestAttributeDiff::class)[0]);
+	}
+
+	public function testControllerViewIncludesClassAttributes(): void
+	{
+		$route = new Route('/', [TestAttributedController::class, 'view']);
+		$view = new View($this->routeMatch($route), null);
+		$attributes = $view->attributes();
+
+		$this->assertCount(2, $attributes);
+		$this->assertInstanceOf(TestAttributeDiff::class, $attributes[0]);
+		$this->assertInstanceOf(TestAttribute::class, $attributes[1]);
 	}
 
 	public function testAttributeFilteringControllerView(): void
@@ -306,20 +355,76 @@ class ViewTest extends TestCase
 
 	public function testViewWithUnionTypeParam(): void
 	{
-		$this->throws(RuntimeException::class, 'does not support union or intersection types');
-
 		$route = Route::any('/', static fn(string|int $param) => $param)->after($this->renderer());
 		$view = new View($this->routeMatch($route), null);
-		$view->execute($this->request());
+
+		try {
+			$view->execute($this->request());
+			$this->fail('RuntimeException was not thrown');
+		} catch (RuntimeException $e) {
+			$this->assertStringStartsWith(
+				'View parameters cannot be resolved. Details: Autowiring does not support union or '
+					. "intersection types. Source: \n",
+				$e->getMessage(),
+			);
+			$this->assertStringContainsString('{closure:', $e->getMessage());
+			$this->assertStringEndsWith('(..., string|int $param, ...)', $e->getMessage());
+		}
 	}
 
 	public function testViewWithUntypedParam(): void
 	{
-		$this->throws(RuntimeException::class, 'need to have typed constructor parameters');
-
 		$route = Route::any('/', static fn($param) => $param)->after($this->renderer());
 		$view = new View($this->routeMatch($route), null);
-		$view->execute($this->request());
+
+		try {
+			$view->execute($this->request());
+			$this->fail('RuntimeException was not thrown');
+		} catch (RuntimeException $e) {
+			$this->assertStringStartsWith(
+				'View parameters cannot be resolved. Details: Autowired entities need to have typed '
+					. "constructor parameters. Source: \n",
+				$e->getMessage(),
+			);
+			$this->assertStringContainsString('{closure:', $e->getMessage());
+			$this->assertStringEndsWith('(..., $param, ...)', $e->getMessage());
+		}
+	}
+
+	public function testRouteParamNamedLikeClassTypedParamIsResolvedByType(): void
+	{
+		$request = $this->request();
+		$route = Route::any(
+			'/{request}',
+			static fn(ServerRequestInterface $request) => $request::class,
+		)->after($this->renderer());
+		$view = new View($this->routeMatch($route, '/celema'), null);
+
+		$this->assertSame($request::class, (string) $view->execute($request)->getBody());
+	}
+
+	public function testAutowiredDependencyReceivesCurrentRequest(): void
+	{
+		$request = $this->request()->withAttribute('marker', 'current');
+		$route = Route::any(
+			'/',
+			static fn(TestRequestDependency $dependency) => $dependency->request->getAttribute('marker'),
+		)->after($this->renderer());
+		$view = new View($this->routeMatch($route), null);
+
+		$this->assertSame('current', (string) $view->execute($request)->getBody());
+	}
+
+	public function testMiddlewareIncludesRouteAndAttributeMiddleware(): void
+	{
+		$routeMiddleware = new TestMiddleware2();
+		$route = Route::any('/', #[TestMiddleware1] static fn() => 'celema')->middleware($routeMiddleware);
+		$view = new View($this->routeMatch($route), null);
+		$middleware = $view->middleware();
+
+		$this->assertCount(2, $middleware);
+		$this->assertSame($routeMiddleware, $middleware[0]);
+		$this->assertInstanceOf(TestMiddleware1::class, $middleware[1]);
 	}
 
 	public function testViewWithUnresolvableParamAndDefault(): void

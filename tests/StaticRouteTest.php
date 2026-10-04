@@ -64,6 +64,14 @@ class StaticRouteTest extends TestCase
 		);
 	}
 
+	public function testStaticAssetPathMayStartWithSlash(): void
+	{
+		$router = new Router();
+		$router->addStatic('/static', $this->root . '/public/static');
+
+		$this->assertSame('/static/test.json', $router->asset('/static', '/test.json'));
+	}
+
 	public function testStaticRoutesNamed(): void
 	{
 		$router = new Router();
@@ -123,6 +131,9 @@ class StaticRouteTest extends TestCase
 			rmdir($static);
 
 			$this->assertSame('/static/test.json', $router->asset('/static', 'test.json', true));
+			// Without a root, a path must not resolve against the filesystem root.
+			$fixture = ltrim((string) realpath($this->root . '/public/static/test.json'), '/');
+			$this->assertSame('/static/' . $fixture, $router->asset('/static', $fixture, true));
 		} finally {
 			if (is_dir($static)) {
 				rmdir($static);
@@ -152,6 +163,15 @@ class StaticRouteTest extends TestCase
 		$router->asset('/static', '../../TestController.php');
 	}
 
+	public function testStaticRouteRejectsBackslashTraversalPath(): void
+	{
+		$this->throws(InvalidArgumentException::class, 'Static path must stay inside static root');
+
+		$router = new Router();
+		$router->addStatic('/static', $this->root . '/public/static');
+		$router->asset('/static', '..\\..\\TestController.php');
+	}
+
 	public function testStaticRouteRejectsEncodedTraversalPath(): void
 	{
 		$this->throws(InvalidArgumentException::class, 'Static path must stay inside static root');
@@ -169,7 +189,8 @@ class StaticRouteTest extends TestCase
 
 		$base = sys_get_temp_dir() . '/celema-router-static-' . str_replace('.', '', uniqid('', true));
 		$static = $base . '/static';
-		$outside = $base . '/outside';
+		// A sibling sharing the root's name as prefix must count as outside.
+		$outside = $base . '/static-outside';
 		$staticLink = $static . '/secret.txt';
 		$outsideFile = $outside . '/secret.txt';
 
@@ -211,7 +232,11 @@ class StaticRouteTest extends TestCase
 
 	public function testStaticRouteDuplicateNamed(): void
 	{
-		$this->throws(RuntimeException::class, 'Duplicate static route: static');
+		$this->throws(
+			RuntimeException::class,
+			'Duplicate static route: static. If you want to use the same url prefix you have to create '
+				. 'static routes with names.',
+		);
 
 		$router = new Router();
 		$router->addStatic('/static', $this->root . '/public/static', 'static');

@@ -102,7 +102,7 @@ class RouteTest extends TestCase
 
 	public function testParameterMatchingBraceErrorI(): void
 	{
-		$this->throws(ValueError::class, 'Escaped braces are not allowed');
+		$this->throws(ValueError::class, 'Escaped braces are not allowed: /contributed/{from:\\{\\d+}');
 
 		// Invalid escaped left braces
 		$route = new Route('/contributed/{from:\{\d+}', static fn() => null);
@@ -111,7 +111,7 @@ class RouteTest extends TestCase
 
 	public function testParameterMatchingBraceErrorII(): void
 	{
-		$this->throws(ValueError::class, 'Escaped braces are not allowed:');
+		$this->throws(ValueError::class, 'Escaped braces are not allowed: /contributed/{from:\\d+\\}}');
 
 		// Invalid escaped right braces
 		$route = new Route('/contributed/{from:\d+\}}', static fn() => null);
@@ -120,7 +120,7 @@ class RouteTest extends TestCase
 
 	public function testParameterMatchingBraceErrorIII(): void
 	{
-		$this->throws(ValueError::class, 'Unbalanced braces in route pattern:');
+		$this->throws(ValueError::class, 'Unbalanced braces in route pattern: /contributed/{from:\\d+{1,2}{}');
 
 		// Invalid unbalanced braces
 		$route = new Route('/contributed/{from:\d+{1,2}{}', static fn() => null);
@@ -244,9 +244,16 @@ class RouteTest extends TestCase
 		$route = Route::get('/', static fn() => 'chuck');
 		$route->middleware(new TestMiddleware1());
 		$route->middleware(new TestMiddleware2());
+		// Spread arrays with string keys must not replace earlier middleware.
+		$route->middleware(...['auth' => new TestMiddleware1()]);
+		$route->middleware(...['auth' => new TestMiddleware2()]);
 		$middleware = $route->getMiddleware();
 
+		$this->assertCount(4, $middleware);
+		$this->assertTrue(array_is_list($middleware));
 		$this->assertInstanceof(TestMiddleware1::class, $middleware[0]);
 		$this->assertInstanceof(TestMiddleware2::class, $middleware[1]);
+		$this->assertInstanceof(TestMiddleware1::class, $middleware[2]);
+		$this->assertInstanceof(TestMiddleware2::class, $middleware[3]);
 	}
 }

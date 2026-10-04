@@ -127,6 +127,31 @@ final class RoutePatternTest extends TestCase
 		new RoutePattern('/files/...slug')->generate(['slug' => '/secret.txt']);
 	}
 
+	public function testConstraintMayContainRegexDelimiter(): void
+	{
+		$pattern = new RoutePattern('/tags/{name:a~b}');
+
+		$this->assertSame(['name' => 'a~b'], $pattern->match('/tags/a~b'));
+		$this->assertSame('/tags/a~b', $pattern->generate(['name' => 'a~b']));
+	}
+
+	public function testTrailingSlashIsIgnored(): void
+	{
+		$pattern = new RoutePattern('/albums/');
+
+		$this->assertSame([], $pattern->match('/albums'));
+	}
+
+	public function testGenerateRejectsNullByteInRemainder(): void
+	{
+		$this->throws(
+			\Celema\Router\Exception\InvalidArgumentException::class,
+			'Remainder route parameter must be a relative path: slug',
+		);
+
+		new RoutePattern('/files/...slug')->generate(['slug' => "secret\0.txt"]);
+	}
+
 	public function testRejectDuplicateParameterNames(): void
 	{
 		$this->throws(ValueError::class, 'Duplicate route parameter: id');

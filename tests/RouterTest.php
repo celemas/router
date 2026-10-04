@@ -131,6 +131,10 @@ class RouterTest extends TestCase
 		$route = $router->map(['get', 'POST'], '/login', static fn() => null, 'login');
 
 		$this->assertSame(['GET', 'POST'], $route->methods());
+		$this->assertSame(
+			['GET', 'POST'],
+			Route::map(['read' => 'get', 'write' => 'post'], '/', static fn() => null)->methods(),
+		);
 		$this->assertSame($route, $router->match($this->request('GET', '/login'))->route());
 		$this->assertSame($route, $router->match($this->request('POST', '/login'))->route());
 		$this->assertSame('/login', $router->url('login'));
@@ -180,6 +184,51 @@ class RouterTest extends TestCase
 		]));
 	}
 
+	public function testGenerateRootUrlWithoutPrefix(): void
+	{
+		$router = new Router();
+		$router->get('/', static fn() => null, 'home');
+
+		$this->assertSame('/', $router->url('home'));
+	}
+
+	public function testGenerateRouteUrlSkipsNullQueryValuesAnywhere(): void
+	{
+		$router = new Router();
+		$router->get('/albums', static fn() => null, 'albums');
+
+		$this->assertSame('/albums?page=2', $router->url('albums', query: ['empty' => null, 'page' => 2]));
+	}
+
+	public function testGenerateRouteUrlWithStringableInQueryList(): void
+	{
+		$value = new class() {
+			public function __toString(): string
+			{
+				return 'death metal';
+			}
+		};
+		$router = new Router();
+		$router->get('/albums', static fn() => null, 'albums');
+
+		$this->assertSame(
+			'/albums?tag%5B0%5D=death%20metal&page=2',
+			$router->url('albums', query: ['tag' => [$value], 'page' => 2]),
+		);
+	}
+
+	public function testGenerateRouteUrlRejectsObjectInQueryList(): void
+	{
+		$this->throws(
+			InvalidArgumentException::class,
+			'Query parameter must be scalar or a list of scalars: tag',
+		);
+
+		$router = new Router();
+		$router->get('/albums', static fn() => null, 'albums');
+		$router->url('albums', query: ['tag' => [new \stdClass()]]);
+	}
+
 	public function testGenerateRouteUrlWithPrefixHostAndQuery(): void
 	{
 		$router = new Router('/cms/');
@@ -227,7 +276,7 @@ class RouterTest extends TestCase
 	{
 		$this->throws(
 			InvalidArgumentException::class,
-			'Query parameter must be scalar or a list of scalars',
+			'Query parameter must be scalar or a list of scalars: filters',
 		);
 
 		$router = new Router();
@@ -239,7 +288,7 @@ class RouterTest extends TestCase
 	{
 		$this->throws(
 			InvalidArgumentException::class,
-			'Query parameter must be scalar or a list of scalars',
+			'Query parameter must be scalar or a list of scalars: sort',
 		);
 
 		$router = new Router();
@@ -249,7 +298,7 @@ class RouterTest extends TestCase
 
 	public function testFailToGenerateRouteUrl(): void
 	{
-		$this->throws(RuntimeException::class, 'Route not found');
+		$this->throws(RuntimeException::class, 'Route not found: fantasy');
 
 		$router = new Router();
 		$router->url('fantasy');
@@ -382,6 +431,37 @@ class RouterTest extends TestCase
 		} catch (MethodNotAllowedException $e) {
 			$this->assertSame(['GET', 'HEAD', 'PUT'], $e->allowedMethods());
 		}
+	}
+
+	public function testMatchingIgnoresRequestMethodCase(): void
+	{
+		$router = new Router();
+		$route = $router->get('/', static fn() => null);
+
+		$this->assertSame($route, $router->match($this->request('get', '/'))->route());
+	}
+
+	public function testMethodNotAllowedChecksEveryRouteOfAMethod(): void
+	{
+		$router = new Router();
+		$router->post('/first', static fn() => null);
+		$router->post('/second', static fn() => null);
+
+		try {
+			$router->match($this->request('GET', '/second'));
+			$this->fail('Expected method not allowed exception.');
+		} catch (MethodNotAllowedException $e) {
+			$this->assertSame(['POST'], $e->allowedMethods());
+		}
+	}
+
+	public function testMethodNotAllowedNormalizesAllowedMethods(): void
+	{
+		$e = new MethodNotAllowedException(['get', 'get', 'post']);
+
+		$this->assertSame(['GET', 'POST'], $e->allowedMethods());
+		$this->assertSame('Method not allowed', $e->getMessage());
+		$this->assertSame('Only GET', new MethodNotAllowedException(['GET'], 'Only GET')->getMessage());
 	}
 
 	public function testAllowedMethodsListHeadOnce(): void
