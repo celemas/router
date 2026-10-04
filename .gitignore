@@ -1,4 +1,5 @@
 /.coverage
+/.infection
 /data
 /tmp
 /vendor
@@ -9,5 +10,6 @@ __pycache__
 .php*.cache
 .phpactor.json
 composer.lock
+infection.json5
 phpunit.xml
 psalm.xml
