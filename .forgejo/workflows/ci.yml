@@ -41,9 +41,9 @@ jobs:
           EVENT: ${{ forgejo.event_name }}
           BEFORE: ${{ forgejo.event.before }}
         run: |
-          # Infection collects its own line coverage: the coverage step uses
-          # path coverage, whose inflated test times in the JUnit log would
-          # make Infection skip mutants as too slow.
+          # Infection collects its own line coverage instead of reusing the
+          # coverage step's: its JUnit test times are inflated by coverage
+          # collection and would make Infection skip mutants as too slow.
           set --
           # Pushes mutate only changed lines. New branches and force pushes
           # have no usable base commit and run the full suite, as do
