@@ -240,7 +240,7 @@ final class View
 		$type = $param->getType();
 
 		if ($type instanceof ReflectionNamedType) {
-			$typeName = ltrim($type->getName(), '?');
+			$typeName = $type->getName();
 
 			if ($typeName === Request::class || is_subclass_of($typeName, Request::class)) {
 				return $request;

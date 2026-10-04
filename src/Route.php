@@ -119,7 +119,7 @@ class Route
 	{
 		/** @var list<string> $methods */
 		$methods = array_map(static fn(string $method): string => strtoupper($method), $args);
-		$this->methods = [...($this->methods ?? []), ...$methods];
+		$this->methods = $methods;
 
 		return $this;
 	}
