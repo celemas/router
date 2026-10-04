@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Celema\Router;
 
 use Celema\Router\Exception\RuntimeException;
+use Celema\Router\Exception\UnresolvableParameter;
 use Celema\Wire\Creator;
 use Celema\Wire\Exception\WireException;
 use Closure;
@@ -224,14 +225,12 @@ final class View
 	): mixed {
 		try {
 			return $this->resolveParam($param, $request);
-		} catch (RuntimeException|WireException $e) {
+		} catch (UnresolvableParameter|WireException $e) {
 			if ($param->isDefaultValueAvailable()) {
 				return $param->getDefaultValue();
 			}
 
-			$code = $e->getCode();
-
-			throw new RuntimeException($errMsg . $e->getMessage(), is_int($code) ? $code : 0, $e);
+			throw new RuntimeException($errMsg . $e->getMessage(), $e->getCode(), $e);
 		}
 	}
 
@@ -251,7 +250,7 @@ final class View
 			}
 
 			if (!class_exists($typeName) && !interface_exists($typeName)) {
-				throw new RuntimeException(
+				throw new UnresolvableParameter(
 					"Type '{$typeName}' is not a class or interface. Source: \n" . $this->paramInfo($param),
 				);
 			}
@@ -260,12 +259,12 @@ final class View
 			return $this->creator->resolve($typeName, predefinedTypes: [Request::class => $request]);
 		}
 		if ($type) {
-			throw new RuntimeException(
+			throw new UnresolvableParameter(
 				"Autowiring does not support union or intersection types. Source: \n" . $this->paramInfo($param),
 			);
 		}
 
-		throw new RuntimeException(
+		throw new UnresolvableParameter(
 			"Autowired entities need to have typed constructor parameters. Source: \n" . $this->paramInfo($param),
 		);
 	}

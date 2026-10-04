@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Exceptions thrown while a view's dependencies are constructed bubble unchanged, as documented. Before, a dependency throwing the router's own `RuntimeException` was wrapped as "View parameters cannot be resolved", or swallowed when the parameter had a default value.
 - HEAD requests match GET routes, as RFC 9110 requires every general-purpose server to support HEAD wherever it supports GET. Before, a HEAD request to a GET route got a 405 response. A HEAD route for the same path still takes precedence, and `MethodNotAllowedException::allowedMethods()` lists HEAD wherever GET is allowed.
 
 ## [0.5.0](https://codefloe.com/celema/router/src/tag/0.5.0) (2026-10-02)

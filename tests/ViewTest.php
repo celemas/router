@@ -18,6 +18,7 @@ use Celema\Router\Tests\Fixtures\TestControllerWithRoute;
 use Celema\Router\Tests\Fixtures\TestMiddleware1;
 use Celema\Router\Tests\Fixtures\TestMiddleware2;
 use Celema\Router\Tests\Fixtures\TestRequestDependency;
+use Celema\Router\Tests\Fixtures\TestRouterExceptionThrowingClass;
 use Celema\Router\Tests\Fixtures\TestThrowingClass;
 use Celema\Router\Tests\Fixtures\TestUnresolvableClass;
 use Celema\Router\View;
@@ -310,6 +311,34 @@ class ViewTest extends TestCase
 		$this->throws(LogicException::class, 'constructor failed');
 
 		$route = Route::any('/', static fn(?TestThrowingClass $param = null) => $param)->after(
+			$this->renderer(),
+		);
+		$view = new View($this->routeMatch($route), null);
+		$view->execute($this->request());
+	}
+
+	public function testViewWithDependencyThrowingRouterExceptionBubblesUnchanged(): void
+	{
+		$route = Route::any('/', static fn(TestRouterExceptionThrowingClass $param) => $param)->after(
+			$this->renderer(),
+		);
+		$view = new View($this->routeMatch($route), null);
+
+		try {
+			$view->execute($this->request());
+			$this->fail('RuntimeException was not thrown');
+		} catch (RuntimeException $e) {
+			$this->assertSame('dependency failed', $e->getMessage());
+			$this->assertSame(7, $e->getCode());
+			$this->assertNull($e->getPrevious());
+		}
+	}
+
+	public function testViewWithDependencyThrowingRouterExceptionAndDefaultBubblesUnchanged(): void
+	{
+		$this->throws(RuntimeException::class, 'dependency failed');
+
+		$route = Route::any('/', static fn(?TestRouterExceptionThrowingClass $param = null) => $param)->after(
 			$this->renderer(),
 		);
 		$view = new View($this->routeMatch($route), null);
