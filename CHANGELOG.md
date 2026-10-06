@@ -1,6 +1,10 @@
 # Changelog
 
-## [Unreleased](https://codefloe.com/celema/router/compare/0.5.0...HEAD)
+## [Unreleased](https://codefloe.com/celema/router/compare/0.5.1...HEAD)
+
+No notable changes since the last release.
+
+## [0.5.1](https://codefloe.com/celema/router/src/tag/0.5.1) (2026-10-06)
 
 ### Fixed
 
